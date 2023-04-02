@@ -83,138 +83,131 @@
   const $ = document.querySelector.bind(document);
   const $$ = document.querySelectorAll.bind(document);
 
+  // Lấy ra các thẻ html
+  const player = $(".player");
+  const heading = $("header h2");
+  const cdThumb = $(".cd-thumb");
+  const audio = $("#audio");
+  const cd = $(".cd");
+  const playBtn = $(".btn-toggle-play");
+  const progress = $("#progress");
+
   const app = {
+    currentIndex: 0,
+    isPlaying: false,
     songs: [
       {
         name: "Nevada",
         singer: "Vicetone",
-        path: ".assets/music/song1.mp3",
+        path: "./assets/music/song1.mp3",
         image: "./assets/img/song1.png",
       },
       {
         name: " Summertime",
         singer: "Sunshine",
-        path: ".assets/music/song2.mp3",
+        path: "./assets/music/song2.mp3",
         image: "./assets/img/song2.png",
       },
       {
         name: "TheFatRat",
         singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
+        path: "./assets/music/song3.mp3",
         image: "./assets/img/song3.png",
       },
       {
         name: "TheFatRat",
         singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
+        path: "./assets/music/song3.mp3",
         image: "./assets/img/song3.png",
       },
       {
         name: "TheFatRat",
         singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
+        path: "./assets/music/song3.mp3",
         image: "./assets/img/song3.png",
       },
       {
         name: "TheFatRat",
         singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
+        path: "./assets/music/song3.mp3",
         image: "./assets/img/song3.png",
       },
       {
         name: "TheFatRat",
         singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
+        path: "./assets/music/song3.mp3",
         image: "./assets/img/song3.png",
       },
       {
         name: "TheFatRat",
         singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
+        path: "./assets/music/song3.mp3",
         image: "./assets/img/song3.png",
       },
       {
         name: "TheFatRat",
         singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
+        path: "./assets/music/song3.mp3",
         image: "./assets/img/song3.png",
       },
       {
         name: "TheFatRat",
         singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
+        path: "./assets/music/song3.mp3",
         image: "./assets/img/song3.png",
       },
       {
         name: "TheFatRat",
         singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
+        path: "./assets/music/song3.mp3",
         image: "./assets/img/song3.png",
       },
       {
         name: "TheFatRat",
         singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
+        path: "./assets/music/song3.mp3",
         image: "./assets/img/song3.png",
       },
       {
         name: "TheFatRat",
         singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
+        path: "./assets/music/song3.mp3",
         image: "./assets/img/song3.png",
       },
       {
         name: "TheFatRat",
         singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
+        path: "./assets/music/song3.mp3",
         image: "./assets/img/song3.png",
       },
       {
         name: "TheFatRat",
         singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
+        path: "./assets/music/song3.mp3",
         image: "./assets/img/song3.png",
       },
       {
         name: "TheFatRat",
         singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
+        path: "./assets/music/song3.mp3",
         image: "./assets/img/song3.png",
       },
       {
         name: "TheFatRat",
         singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
+        path: "./assets/music/song3.mp3",
         image: "./assets/img/song3.png",
       },
       {
         name: "TheFatRat",
         singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
+        path: "./assets/music/song3.mp3",
         image: "./assets/img/song3.png",
       },
       {
         name: "TheFatRat",
         singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
-        image: "./assets/img/song3.png",
-      },
-      {
-        name: "TheFatRat",
-        singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
-        image: "./assets/img/song3.png",
-      },
-      {
-        name: "TheFatRat",
-        singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
-        image: "./assets/img/song3.png",
-      },
-      {
-        name: "TheFatRat",
-        singer: "feat. Laura Brehm",
-        path: ".assets/music/song3.mp3",
+        path: "./assets/music/song3.mp3",
         image: "./assets/img/song3.png",
       },
     ],
@@ -240,18 +233,79 @@
       });
       $(".playlist").innerHTML = htmls.join("");
     },
+    defineProperties: function () {
+      Object.defineProperty(this, "currentSong", {
+        get: function () {
+          return this.songs[this.currentIndex];
+        },
+      });
+    },
+    // getCurrentSong: function(){
+    //   return this.songs[this.currentIndex];
+    // },
     handleEvents: function () {
-      const cd = $(".cd");
+      const _this = this;
       const cdWidth = cd.offsetWidth;
+      // xử lý phóng to thu nhỏ event
       document.onscroll = function () {
         const scrollTop = window.scrollY || document.documentElement.scrollTop;
         const newCdWidth = cdWidth - scrollTop;
         cd.style.width = newCdWidth > 0 ? newCdWidth + "px" : 0;
         cd.style.opacity = newCdWidth / cdWidth;
       };
+      // xử lý khi click play
+      playBtn.onclick = function () {
+        if (_this.isPlaying) {
+          audio.pause();
+        } else {
+          audio.play();
+        }
+      };
+      // set trạng thái khi song được play
+      audio.onplay = function () {
+        _this.isPlaying = true;
+        player.classList.add("playing");
+      };
+      // set trạng thái khi song bị pause
+      audio.onpause = function () {
+        _this.isPlaying = false;
+        player.classList.remove("playing");
+      };
+
+      // khi thay đổi tiến độ bài hát
+      audio.ontimeupdate = function () {
+        const timeDuration = audio.duration;
+        if (timeDuration) {
+          const progressPercent = Math.floor(
+            (audio.currentTime / audio.duration) * 100
+          );
+          progress.value = progressPercent;
+        }
+      };
+      // Xử lý khi tua xong
+      progress.oninput = function (e) {
+        // console.log(e.target.value)
+        const seekTime = (audio.duration / 100) * e.target.value;
+        audio.currentTime = seekTime;
+      };
+    },
+    loadCurrentSong: function () {
+      heading.textContent = this.currentSong.name;
+      cdThumb.style.backgroundImage = `url('${this.currentSong.image}')`;
+      audio.src = this.currentSong.path;
+      // console.log(heading, cdThumb, audio);
     },
     start: function () {
+      //Định nghĩa các thuộc tính cho object
+      this.defineProperties();
+
+      // Lắng nghe / xử lý các sự kiện (Dom event)
       this.handleEvents();
+
+      // Tải thông tin bài hát đầu tiên vào ui khi chạy ứng dụng
+      this.loadCurrentSong();
+
+      // render playlists
       this.render();
     },
   };
